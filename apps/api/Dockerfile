@@ -9,9 +9,7 @@ COPY package*.json ./
 RUN npm install --production
 
 # Copy application files
-COPY simple-server.js .
-COPY database.js .
-COPY .env* ./
+COPY . . 
 
 # Create data directory
 RUN mkdir -p /app/data
