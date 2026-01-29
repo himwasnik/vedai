@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Prisma
+apps/api/prisma/migrations/
+apps/api/prisma/dev.db
+
+# Uploads
+uploads/
+*.uploaded
+
+# Misc
+.turbo
+.cache
+temp/
+tmp/

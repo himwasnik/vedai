@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: vedai-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    volumes:
+      # Persist database files
+      - api-data:/app/data
+    networks:
+      - vedai-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Web App
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: vedai-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - NODE_ENV=production
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - vedai-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  vedai-network:
+    driver: bridge
+
+volumes:
+  # Persist API data (JSON database files)
+  api-data:
+    driver: local
