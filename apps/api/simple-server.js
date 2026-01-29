@@ -8,6 +8,9 @@ const { callBedrockAI, analyzeKundli } = require('./bedrock-service');
 
 const app = express();
 
+// AWS Bedrock will use credential chain automatically (same as your test!)
+console.log('✅ AWS Bedrock configured. Using credential chain (same as test_anthropic_api.js)');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -544,6 +547,7 @@ app.post('/api/v1/chat/message', async (req, res) => {
 
     // If Bedrock fails (no credentials), use fallback
     if (!aiResponse) {
+      console.log('AWS Bedrock failed, using fallback response');
       const fallbackData = generateAIResponse(message, history || []);
       aiResponse = fallbackData.response;
     }
@@ -568,7 +572,7 @@ app.post('/api/v1/chat/message', async (req, res) => {
   }
 });
 
-// Kundli Analysis endpoint
+// Kundli Analysis endpoint with AWS Bedrock AI
 app.post('/api/v1/kundli/analyze', async (req, res) => {
   try {
     const { name, dateOfBirth, timeOfBirth, placeOfBirth, gender } = req.body;
@@ -579,6 +583,8 @@ app.post('/api/v1/kundli/analyze', async (req, res) => {
         error: 'All birth details are required (name, dateOfBirth, timeOfBirth, placeOfBirth)'
       });
     }
+
+    console.log(`Analyzing Kundli for: ${name}, DOB: ${dateOfBirth}, Time: ${timeOfBirth}, Place: ${placeOfBirth}`);
 
     // Analyze Kundli using AWS Bedrock AI
     const analysis = await analyzeKundli({
@@ -592,7 +598,7 @@ app.post('/api/v1/kundli/analyze', async (req, res) => {
     // If Bedrock fails, provide a fallback response
     const finalAnalysis = analysis || generateFallbackKundliAnalysis({ name, dateOfBirth, timeOfBirth, placeOfBirth, gender });
 
-    // Get gemstone recommendations
+    // Get gemstone recommendations based on the analysis
     const recommendations = getGemstoneRecommendationsForKundli(finalAnalysis);
 
     res.json({

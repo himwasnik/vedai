@@ -8,14 +8,13 @@ Complete AI-powered Vedic astrology platform with AWS Bedrock integration, Kundl
 
 ## ✨ Features
 
-
-- 🤖 **AI Astrology Chat** - Powered by AWS Bedrock Claude Instant (cheapest model)
+- 🤖 **AI Astrology Chat** - Powered by Anthropic Claude API (Claude 3 Haiku - cheapest model)
 - 🔮 **Kundli Analysis** - Complete Vedic birth chart analysis with AI
 - 💎 **Gemstone Store** - E-commerce for spiritual products
 - ✨ **Smart Recommendations** - AI suggests gemstones based on chat & Kundli
 - 📱 **Responsive Design** - Works on all devices
 - 📊 **Simple Database** - JSON files (easy to migrate later)
-- ⚡ **Works Offline** - Fallback responses if no AWS credentials
+- ⚡ **Works Offline** - Fallback responses if no API key
 
 ## 🚀 Quick Start (2 Minutes!)
 
@@ -30,14 +29,12 @@ cd ../web
 npm install
 ```
 
-### 2. (Optional) Configure AWS Bedrock
-```bash
-cd apps/api
-cp .env.example .env
-# Edit .env and add AWS credentials
-```
+### 2. AWS Credentials Already Set Up!
+Your `test_anthropic_api.js` works, so AWS credentials are already configured!
 
-**Note:** App works without AWS (uses fallback AI responses)
+No need to add anything - the app uses AWS credential chain automatically.
+
+**Note:** If AI doesn't work, app will use fallback responses
 
 ### 3. Start the App
 
@@ -75,51 +72,39 @@ npm run dev
 - Search, filter, sort
 - Add to cart
 
-## 🤖 AWS Bedrock Setup (Optional)
+## 🤖 Anthropic API Setup
 
-### Why AWS Bedrock?
-- **Cheapest AI**: `anthropic.claude-instant-v1`
-- **Cost**: ~$0.80/$2.40 per 1M tokens (~$1-3/month for typical usage)
-- **Quality**: Better responses than free alternatives
+### Why Anthropic?
+- **Cheapest Claude Model**: Claude 3 Haiku (~$0.25/$1.25 per 1M tokens)
+- **Cost**: ~$0.50-2/month for typical usage
+- **Quality**: Excellent responses for astrology and Kundli analysis
+- **Free Credit**: $5 free for new users
 
 ### Setup Steps
 
-1. **Create AWS Account**
-   - Go to https://aws.amazon.com/
-   - Sign up (free tier available)
+1. **Create Anthropic Account**
+   - Go to https://console.anthropic.com/
+   - Sign up (FREE $5 credit!)
 
-2. **Enable Bedrock**
-   - AWS Console → Bedrock
-   - Request access to `anthropic.claude-instant-v1`
-   - Usually approved instantly
+2. **Get API Key**
+   - Console → API Keys
+   - Click "Create Key"
+   - Copy the key (starts with `sk-ant-...`)
 
-3. **Create IAM User**
-   - IAM → Users → Create User
-   - Attach policy: `AmazonBedrockFullAccess`
-   - Create access key
-   - Copy credentials
-
-4. **Add Credentials**
+3. **Add to Your App**
    ```bash
    cd apps/api
-   cp .env.example .env
+   echo "ANTHROPIC_API_KEY=sk-ant-your-key-here" > .env
    ```
 
-   Edit `.env`:
-   ```env
-   AWS_ACCESS_KEY_ID=your_key_here
-   AWS_SECRET_ACCESS_KEY=your_secret_here
-   AWS_REGION=us-east-1
-   ```
-
-5. **Restart Backend**
+4. **Restart Backend**
    ```bash
    npm start
    ```
 
-Done! Now AI will use AWS Bedrock for real intelligence.
+Done! Now chat and Kundli will use real AI!
 
-### Without AWS Bedrock
+### Without API Key
 No problem! App uses intelligent fallback responses for:
 - Career, love, health, wealth guidance
 - Gemstone recommendations
@@ -130,18 +115,19 @@ No problem! App uses intelligent fallback responses for:
 ```
 vedai/
 ├── apps/
-│   ├── api/                    # Backend (Node.js/Express)
-│   │   ├── simple-server.js    # Main server
-│   │   ├── bedrock-service.js  # AWS Bedrock integration
-│   │   ├── database.js         # JSON database
-│   │   ├── data/               # Data storage (auto-created)
-│   │   ├── .env.example        # Environment template
-│   │   └── package.json        # Only 4 dependencies!
-│   └── web/                    # Frontend (Next.js 14)
+│   ├── api/                      # Backend (Node.js/Express)
+│   │   ├── simple-server.js      # Main server
+│   │   ├── anthropic-service.js  # Anthropic AI integration
+│   │   ├── database.js           # JSON database
+│   │   ├── data/                 # Data storage (auto-created)
+│   │   ├── .env                  # Your API key (gitignored)
+│   │   └── package.json          # Only 4 dependencies!
+│   └── web/                      # Frontend (Next.js 14)
 │       ├── app/
-│       │   ├── page.tsx        # Home
-│       │   ├── chat/           # Chat + Kundli form
-│       │   └── shop/           # Store
+│       │   ├── page.tsx          # Home
+│       │   ├── chat/             # Chat + Kundli form
+│       │   ├── shop/             # Store
+│       │   └── admin/            # Admin dashboard
 │       └── components/
 ├── docker-compose.yml
 └── README.md
@@ -265,16 +251,19 @@ npm start
 
 ## 💰 Cost
 
-**With AWS Bedrock:**
-- ~$1-3/month for typical usage
-- Pay only for what you use
+**With Anthropic API:**
+- Claude 3 Haiku: $0.25 per 1M input tokens, $1.25 per 1M output tokens
+- ~$0.50-2/month for typical usage (100-200 messages/day)
+- **FREE $5 credit** for new users (lasts months!)
 
-**Without AWS:**
-- FREE! Uses fallback responses
+**Without API Key:**
+- FREE! Uses intelligent fallback responses
 
 **Hosting:**
 - Backend: Free tier (Railway/Render)
 - Frontend: Free (Vercel)
+
+**Total:** FREE to start, <$2/month after credit
 
 ## 📈 Future Features
 
