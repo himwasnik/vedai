@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import Link from 'next/link';
 
 interface Product {
@@ -10,316 +9,406 @@ interface Product {
   productName: string;
   shortDescription: string;
   price: number;
-  compareAtPrice?: number;
+  compareAtPrice: number;
   category: string;
   isInStock: boolean;
 }
 
-export default function AdminPage() {
+export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    productName: '',
+    slug: '',
+    shortDescription: '',
+    price: '',
+    compareAtPrice: '',
+    category: 'gemstones',
+    isInStock: true
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+
+  // Fetch products
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:5000/api/v1/admin/products', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+      alert('Error loading products: ' + error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
+  // Handle form input
+  const handleInputChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  // Handle submit
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    
+    if (!formData.productName || !formData.slug || !formData.price) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
     try {
-      const response = await fetch('http://localhost:5000/api/v1/products');
-      const data = await response.json();
-      setProducts(data.products || []);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setIsLoading(false);
+      const url = editingId 
+        ? `http://localhost:5000/api/v1/admin/products/${editingId}`
+        : 'http://localhost:5000/api/v1/admin/products';
+      
+      const method = editingId ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
+        body: JSON.stringify({
+          ...formData,
+          price: parseFloat(formData.price) || 0,
+          compareAtPrice: parseFloat(formData.compareAtPrice) || parseFloat(formData.price) || 0
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save product');
+      }
+
+      const result = await response.json();
+      fetchProducts();
+      resetForm();
+      alert(editingId ? 'Product updated successfully!' : 'Product created successfully!');
+    } catch (error: any) {
+      console.error('Error saving product:', error);
+      alert('Error saving product: ' + error.message);
     }
   };
 
+  // Handle delete
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/v1/admin/products/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors'
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete product');
+      }
+
+      fetchProducts();
+      alert('Product deleted successfully!');
+    } catch (error: any) {
+      console.error('Error deleting product:', error);
+      alert('Error deleting product: ' + error.message);
+    }
+  };
+
+  // Handle edit
   const handleEdit = (product: Product) => {
-    setEditingProduct({ ...product });
-    setIsEditing(true);
+    setFormData({
+      productName: product.productName,
+      slug: product.slug,
+      shortDescription: product.shortDescription,
+      price: product.price.toString(),
+      compareAtPrice: product.compareAtPrice.toString(),
+      category: product.category,
+      isInStock: product.isInStock
+    });
+    setEditingId(product.id);
+    setShowForm(true);
   };
 
-  const handleSave = () => {
-    if (!editingProduct) return;
-
-    // Update products array
-    const updatedProducts = products.map((p) =>
-      p.id === editingProduct.id ? editingProduct : p
-    );
-    setProducts(updatedProducts);
-
-    // In a real app, you'd save to backend here
-    alert('Product updated! (Note: Changes are in-memory only. Implement backend endpoint for persistence)');
-    setIsEditing(false);
-    setEditingProduct(null);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditingProduct(null);
-  };
-
-  const handleDelete = (productId: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter((p) => p.id !== productId));
-      alert('Product deleted! (Note: Changes are in-memory only. Implement backend endpoint for persistence)');
-    }
-  };
-
-  const handleAdd = () => {
-    const newProduct: Product = {
-      id: (Date.now()).toString(),
-      slug: 'new-product',
-      productName: 'New Product',
-      shortDescription: 'Description here',
-      price: 0,
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      productName: '',
+      slug: '',
+      shortDescription: '',
+      price: '',
+      compareAtPrice: '',
       category: 'gemstones',
-      isInStock: true,
-    };
-    setEditingProduct(newProduct);
-    setIsEditing(true);
+      isInStock: true
+    });
+    setEditingId(null);
+    setShowForm(false);
   };
+
+  // Filter products
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.slug.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                Back to Site
-              </Link>
-              <Link href="/shop" className="text-gray-600 hover:text-gray-900">
-                View Shop
-              </Link>
+      <header className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+              <p className="text-purple-100">Manage Products & Gemstones</p>
             </div>
+            <Link href="/shop" className="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100">
+              Back to Shop
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Manage Products</h2>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Control Panel */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">Products ({filteredProducts.length})</h2>
             <button
-              onClick={handleAdd}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+              onClick={() => {
+                resetForm();
+                setShowForm(!showForm);
+              }}
+              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 font-semibold"
             >
-              <Plus className="w-4 h-4" />
-              Add Product
+              {showForm ? 'Cancel' : '+ Add New Product'}
             </button>
           </div>
 
-          {/* Products Table */}
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading products...</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Product Name</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Stock</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Actions</th>
+          {/* Search & Filter */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2"
+            />
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2"
+            >
+              <option value="all">All Categories</option>
+              <option value="gemstones">Gemstones</option>
+              <option value="rudraksha">Rudraksha</option>
+              <option value="yantras">Yantras</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Form */}
+        {showForm && (
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h3 className="text-2xl font-bold mb-6 text-gray-800">
+              {editingId ? 'Edit Product' : 'Create New Product'}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="productName"
+                  placeholder="Product Name"
+                  value={formData.productName}
+                  onChange={handleInputChange}
+                  required
+                  className="border border-gray-300 rounded-lg px-4 py-2"
+                />
+                <input
+                  type="text"
+                  name="slug"
+                  placeholder="Slug (URL-friendly)"
+                  value={formData.slug}
+                  onChange={handleInputChange}
+                  required
+                  className="border border-gray-300 rounded-lg px-4 py-2"
+                />
+              </div>
+
+              <textarea
+                name="shortDescription"
+                placeholder="Short Description"
+                value={formData.shortDescription}
+                onChange={handleInputChange}
+                rows={3}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
+                  step="0.01"
+                  className="border border-gray-300 rounded-lg px-4 py-2"
+                />
+                <input
+                  type="number"
+                  name="compareAtPrice"
+                  placeholder="Original Price (for offer)"
+                  value={formData.compareAtPrice}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  className="border border-gray-300 rounded-lg px-4 py-2"
+                />
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-lg px-4 py-2"
+                >
+                  <option value="gemstones">Gemstones</option>
+                  <option value="rudraksha">Rudraksha</option>
+                  <option value="yantras">Yantras</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="isInStock"
+                    checked={formData.isInStock}
+                    onChange={handleInputChange}
+                    className="w-4 h-4"
+                  />
+                  <span>In Stock</span>
+                </label>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-8 py-2 rounded-lg hover:bg-green-700 font-semibold"
+                >
+                  {editingId ? 'Update Product' : 'Create Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="bg-gray-300 text-gray-800 px-8 py-2 rounded-lg hover:bg-gray-400 font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Products Table */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Product Name</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Compare At</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                  <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(!filteredProducts || filteredProducts.length === 0) ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                      {searchTerm || filterCategory !== 'all' ? 'No products match your filters' : 'No products found'}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">{product.productName}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">₹{product.price.toLocaleString('en-IN')}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{product.category}</td>
-                      <td className="px-4 py-3 text-sm">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            product.isInStock
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
+                ) : (
+                  filteredProducts.map((product: Product) => (
+                    <tr key={product.id} className="border-b hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div>
+                          <p className="font-semibold text-gray-800">{product.productName}</p>
+                          <p className="text-sm text-gray-500">{product.slug}</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-gray-800 font-semibold">₹{product.price?.toLocaleString() || '0'}</td>
+                      <td className="px-6 py-4 text-gray-600">₹{product.compareAtPrice?.toLocaleString() || product.price?.toLocaleString() || '0'}</td>
+                      <td className="px-6 py-4">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                          {product.category || 'gemstones'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-sm ${
+                          product.isInStock 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
                           {product.isInStock ? 'In Stock' : 'Out of Stock'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-6 py-4 text-center">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg inline-flex items-center mr-2"
+                          className="text-blue-600 hover:text-blue-800 font-semibold mr-4"
                         >
-                          <Edit2 className="w-4 h-4" />
+                          Edit
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg inline-flex items-center"
+                          className="text-red-600 hover:text-red-800 font-semibold"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          Delete
                         </button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Note */}
-        <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-sm text-yellow-800">
-            <strong>Note:</strong> This is a simple admin interface. Changes are in-memory only.
-            To persist changes, you need to implement backend endpoints (e.g., POST /api/v1/products/update).
-            Check the backend code in <code className="bg-yellow-100 px-2 py-1 rounded">apps/api/simple-server.js</code>
-          </p>
-        </div>
-      </div>
-
-      {/* Edit Modal */}
-      {isEditing && editingProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">
-                {editingProduct.id ? 'Edit Product' : 'Add Product'}
-              </h3>
-              <button
-                onClick={handleCancel}
-                className="p-2 hover:bg-gray-100 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Name
-                </label>
-                <input
-                  type="text"
-                  value={editingProduct.productName}
-                  onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, productName: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Short Description
-                </label>
-                <textarea
-                  value={editingProduct.shortDescription}
-                  onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, shortDescription: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={editingProduct.price}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, price: Number(e.target.value) })
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Compare Price (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={editingProduct.compareAtPrice || ''}
-                    onChange={(e) =>
-                      setEditingProduct({
-                        ...editingProduct,
-                        compareAtPrice: e.target.value ? Number(e.target.value) : undefined,
-                      })
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category
-                  </label>
-                  <select
-                    value={editingProduct.category}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, category: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="gemstones">Gemstones</option>
-                    <option value="rudraksha">Rudraksha</option>
-                    <option value="yantras">Yantras</option>
-                    <option value="crystals">Crystals</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Stock Status
-                  </label>
-                  <select
-                    value={editingProduct.isInStock ? 'in-stock' : 'out-of-stock'}
-                    onChange={(e) =>
-                      setEditingProduct({
-                        ...editingProduct,
-                        isInStock: e.target.value === 'in-stock',
-                      })
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="in-stock">In Stock</option>
-                    <option value="out-of-stock">Out of Stock</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 mt-6">
-              <button
-                onClick={handleCancel}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-              >
-                <Save className="w-4 h-4" />
-                Save Changes
-              </button>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

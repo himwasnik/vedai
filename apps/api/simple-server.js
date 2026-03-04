@@ -132,6 +132,201 @@ const products = [
   },
   {
     id: '8',
+    slug: 'hessonite-gomed',
+    productName: 'Hessonite (Gomed)',
+    shortDescription: 'Brings confidence, grounding energy, and clarity. Associated with Rahu.',
+    price: 11000,
+    compareAtPrice: 15000,
+    primaryImageUrl: '/images/hessonite.jpg',
+    averageRating: 4.6,
+    reviewCount: 76,
+    isInStock: true,
+    associatedPlanets: ['Rahu'],
+    associatedZodiacSigns: ['Virgo', 'Gemini'],
+    category: 'gemstones',
+  },
+  {
+    id: '9',
+    slug: 'cats-eye-lahsunia',
+    productName: "Cat's Eye (Lahsunia)",
+    shortDescription: "Protects from evil eye and negative influences. Associated with Ketu.",
+    price: 9000,
+    compareAtPrice: 13000,
+    primaryImageUrl: '/images/cats-eye.jpg',
+    averageRating: 4.5,
+    reviewCount: 62,
+    isInStock: true,
+    associatedPlanets: ['Ketu'],
+    associatedZodiacSigns: ['Virgo', 'Scorpio'],
+    category: 'gemstones',
+  },
+  {
+    id: '10',
+    slug: 'diamond-heera',
+    productName: 'Diamond (Heera)',
+    shortDescription: 'Enhances luxury, beauty, and divine grace. Associated with Venus.',
+    price: 50000,
+    compareAtPrice: 75000,
+    primaryImageUrl: '/images/diamond.jpg',
+    averageRating: 4.9,
+    reviewCount: 45,
+    isInStock: true,
+    associatedPlanets: ['Venus'],
+    associatedZodiacSigns: ['Libra', 'Taurus'],
+    category: 'gemstones',
+  },
+  {
+    id: '11',
+    slug: 'white-sapphire',
+    productName: 'White Sapphire (Safed Pukhraj)',
+    shortDescription: 'Promotes clarity, spirituality, and divine connection. Venus substitute.',
+    price: 16000,
+    compareAtPrice: 22000,
+    primaryImageUrl: '/images/white-sapphire.jpg',
+    averageRating: 4.7,
+    reviewCount: 54,
+    isInStock: true,
+    associatedPlanets: ['Venus'],
+    associatedZodiacSigns: ['Libra', 'Taurus'],
+    category: 'gemstones',
+  },
+  {
+    id: '12',
+    slug: 'amethyst',
+    productName: 'Amethyst',
+    shortDescription: 'Spiritual protection and wisdom. Associated with Jupiter and Saturn.',
+    price: 5000,
+    compareAtPrice: 8000,
+    primaryImageUrl: '/images/amethyst.jpg',
+    averageRating: 4.6,
+    reviewCount: 98,
+    isInStock: true,
+    associatedPlanets: ['Jupiter', 'Saturn'],
+    associatedZodiacSigns: ['Aquarius', 'Pisces'],
+    category: 'gemstones',
+  },
+  {
+    id: '13',
+    slug: 'citrine',
+    productName: 'Citrine',
+    shortDescription: 'Attracts wealth, success, and positive energy. Jupiter stone.',
+    price: 4500,
+    compareAtPrice: 7000,
+    primaryImageUrl: '/images/citrine.jpg',
+    averageRating: 4.7,
+    reviewCount: 112,
+    isInStock: true,
+    associatedPlanets: ['Jupiter'],
+    associatedZodiacSigns: ['Sagittarius', 'Gemini'],
+    category: 'gemstones',
+  },
+  {
+    id: '14',
+    slug: 'garnet',
+    productName: 'Garnet',
+    shortDescription: 'Boosts energy, passion, and life force. Associated with Mars.',
+    price: 6000,
+    compareAtPrice: 9500,
+    primaryImageUrl: '/images/garnet.jpg',
+    averageRating: 4.5,
+    reviewCount: 73,
+    isInStock: true,
+    associatedPlanets: ['Mars'],
+    associatedZodiacSigns: ['Aries', 'Scorpio'],
+    category: 'gemstones',
+  },
+  {
+    id: '15',
+    slug: 'aquamarine',
+    productName: 'Aquamarine',
+    shortDescription: 'Enhances communication, clarity, and expression. Mercury stone.',
+    price: 7000,
+    compareAtPrice: 10500,
+    primaryImageUrl: '/images/aquamarine.jpg',
+    averageRating: 4.6,
+    reviewCount: 67,
+    isInStock: true,
+    associatedPlanets: ['Mercury'],
+    associatedZodiacSigns: ['Gemini', 'Virgo'],
+    category: 'gemstones',
+  },
+  {
+    id: '16',
+    slug: 'moonstone',
+    productName: 'Moonstone',
+    shortDescription: 'Soothes emotions, enhances intuition, and balances hormones.',
+    price: 5500,
+    compareAtPrice: 8500,
+    primaryImageUrl: '/images/moonstone.jpg',
+    averageRating: 4.7,
+    reviewCount: 89,
+    isInStock: true,
+    associatedPlanets: ['Moon'],
+    associatedZodiacSigns: ['Cancer', 'Pisces'],
+    category: 'gemstones',
+  },
+  {
+    id: '17',
+    slug: 'carnelian',
+    productName: 'Carnelian',
+    shortDescription: 'Boosts vitality, courage, and creative energy. Mars energy.',
+    price: 4000,
+    compareAtPrice: 6500,
+    primaryImageUrl: '/images/carnelian.jpg',
+    averageRating: 4.6,
+    reviewCount: 95,
+    isInStock: true,
+    associatedPlanets: ['Mars'],
+    associatedZodiacSigns: ['Aries', 'Leo'],
+    category: 'gemstones',
+  },
+  {
+    id: '18',
+    slug: 'opal',
+    productName: 'Opal',
+    shortDescription: 'Enhances intuition, creativity, and emotional balance. Venus energy.',
+    price: 8000,
+    compareAtPrice: 12000,
+    primaryImageUrl: '/images/opal.jpg',
+    averageRating: 4.5,
+    reviewCount: 51,
+    isInStock: true,
+    associatedPlanets: ['Venus'],
+    associatedZodiacSigns: ['Libra', 'Scorpio'],
+    category: 'gemstones',
+  },
+  {
+    id: '19',
+    slug: 'turquoise',
+    productName: 'Turquoise',
+    shortDescription: 'Protects, brings peace, and enhances throat chakra. Jupiter stone.',
+    price: 3500,
+    compareAtPrice: 5500,
+    primaryImageUrl: '/images/turquoise.jpg',
+    averageRating: 4.6,
+    reviewCount: 78,
+    isInStock: true,
+    associatedPlanets: ['Jupiter'],
+    associatedZodiacSigns: ['Sagittarius', 'Aquarius'],
+    category: 'gemstones',
+  },
+  {
+    id: '20',
+    slug: 'lapis-lazuli',
+    productName: 'Lapis Lazuli',
+    shortDescription: 'Deepens spiritual awareness and enhances intuition. Saturn stone.',
+    price: 6500,
+    compareAtPrice: 10000,
+    primaryImageUrl: '/images/lapis-lazuli.jpg',
+    averageRating: 4.7,
+    reviewCount: 82,
+    isInStock: true,
+    associatedPlanets: ['Saturn', 'Jupiter'],
+    associatedZodiacSigns: ['Sagittarius', 'Aquarius'],
+    category: 'gemstones',
+  },
+  {
+    id: '21',
     slug: 'shri-yantra',
     productName: 'Shri Yantra (Brass)',
     shortDescription: 'Sacred geometry for prosperity, abundance, and spiritual growth.',
@@ -174,7 +369,14 @@ function getGemstoneRecommendations(message) {
   const messageLower = message.toLowerCase();
   let recommendations = [];
 
-  if (messageLower.includes('career') || messageLower.includes('job') || messageLower.includes('business')) {
+  if (messageLower.includes('gemstone') || messageLower.includes('stone') || messageLower.includes('crystal')) {
+    // For gemstone-related queries, return top gemstones to show variety
+    recommendations = [
+      { id: '3', name: 'Blue Sapphire (Neelam)', price: 25000, reason: 'Powerful Saturn stone for discipline' },
+      { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Jupiter stone for prosperity' },
+      { id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Mercury stone for success' }
+    ];
+  } else if (messageLower.includes('career') || messageLower.includes('job') || messageLower.includes('business')) {
     recommendations = [
       { id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Enhances communication and business success' },
       { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Brings career opportunities and wisdom' }
@@ -185,24 +387,20 @@ function getGemstoneRecommendations(message) {
     ];
   } else if (messageLower.includes('health') || messageLower.includes('disease') || messageLower.includes('wellness')) {
     recommendations = [
-      { id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Boosts vitality and overall health' },
-      { id: '7', name: '5 Mukhi Rudraksha', price: 500, reason: 'Promotes overall well-being and health' }
+      { id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Boosts vitality and overall health' }
     ];
   } else if (messageLower.includes('wealth') || messageLower.includes('money') || messageLower.includes('prosperity') || messageLower.includes('financial')) {
     recommendations = [
-      { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Attracts wealth and prosperity' },
-      { id: '8', name: 'Shri Yantra (Brass)', price: 2500, reason: 'Sacred geometry for abundance' },
-      { id: '10', name: 'Citrine Crystal', price: 1500, reason: 'Manifests money and success' }
+      { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Attracts wealth and prosperity' }
     ];
   } else if (messageLower.includes('stress') || messageLower.includes('anxiety') || messageLower.includes('peace') || messageLower.includes('calm')) {
     recommendations = [
-      { id: '4', name: 'Natural Pearl (Moti)', price: 8000, reason: 'Calms mind and reduces stress' },
-      { id: '9', name: 'Amethyst Crystal', price: 1200, reason: 'Promotes peace and spiritual clarity' }
+      { id: '4', name: 'Natural Pearl (Moti)', price: 8000, reason: 'Calms mind and reduces stress' }
     ];
   } else if (messageLower.includes('protection') || messageLower.includes('negative') || messageLower.includes('evil eye')) {
     recommendations = [
-      { id: '7', name: '5 Mukhi Rudraksha', price: 500, reason: 'Shields from negative energies' },
-      { id: '6', name: 'Red Coral (Moonga)', price: 10000, reason: 'Protects from enemies and negative forces' }
+      { id: '6', name: 'Red Coral (Moonga)', price: 10000, reason: 'Protects from enemies and negative forces' },
+      { id: '9', name: "Cat's Eye (Lahsunia)", price: 9000, reason: 'Shields from negative energies' }
     ];
   }
 
@@ -256,32 +454,99 @@ Based on your chart, specific gemstones can strengthen planetary influences and 
 
 // Get gemstone recommendations based on Kundli analysis
 function getGemstoneRecommendationsForKundli(analysis) {
-  // Extract keywords from analysis and return relevant gemstones
+  // Extract gemstones mentioned in the analysis text
   const analysisLower = analysis.toLowerCase();
   const recommendations = [];
+  const addedIds = new Set(); // Track added IDs to avoid duplicates
 
-  // Add recommendations based on keywords in the analysis
-  if (analysisLower.includes('mercury') || analysisLower.includes('communication')) {
-    recommendations.push({ id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Strengthens Mercury for communication and business' });
+  // Map of gemstone mentions to product info
+  const gemstoneMap = {
+    // Primary Vedic Gemstones
+    'blue sapphire': { id: '3', name: 'Blue Sapphire (Neelam)', price: 25000, reason: 'Strengthens Saturn for discipline and success' },
+    'neelam': { id: '3', name: 'Blue Sapphire (Neelam)', price: 25000, reason: 'Strengthens Saturn for discipline and success' },
+    'yellow sapphire': { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Enhances Jupiter for wealth and wisdom' },
+    'pukhraj': { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Enhances Jupiter for wealth and wisdom' },
+    'emerald': { id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Strengthens Mercury for communication and business' },
+    'panna': { id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Strengthens Mercury for communication and business' },
+    'ruby': { id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Strengthens Sun for vitality and leadership' },
+    'manikya': { id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Strengthens Sun for vitality and leadership' },
+    'pearl': { id: '4', name: 'Natural Pearl (Moti)', price: 8000, reason: 'Balances Moon for emotional stability' },
+    'moti': { id: '4', name: 'Natural Pearl (Moti)', price: 8000, reason: 'Balances Moon for emotional stability' },
+    'red coral': { id: '6', name: 'Red Coral (Moonga)', price: 10000, reason: 'Boosts courage and energy' },
+    'moonga': { id: '6', name: 'Red Coral (Moonga)', price: 10000, reason: 'Boosts courage and energy' },
+    'hessonite': { id: '8', name: 'Hessonite (Gomed)', price: 11000, reason: 'Brings confidence and grounding energy' },
+    'gomed': { id: '8', name: 'Hessonite (Gomed)', price: 11000, reason: 'Brings confidence and grounding energy' },
+    'cat\'s eye': { id: '9', name: "Cat's Eye (Lahsunia)", price: 9000, reason: 'Protects from negative influences' },
+    'lahsunia': { id: '9', name: "Cat's Eye (Lahsunia)", price: 9000, reason: 'Protects from negative influences' },
+    
+    // Secondary & Complementary Gemstones
+    'diamond': { id: '10', name: 'Diamond (Heera)', price: 50000, reason: 'Enhances luxury, beauty, and grace' },
+    'heera': { id: '10', name: 'Diamond (Heera)', price: 50000, reason: 'Enhances luxury, beauty, and grace' },
+    'white sapphire': { id: '11', name: 'White Sapphire (Safed Pukhraj)', price: 16000, reason: 'Promotes clarity and spirituality' },
+    'safed pukhraj': { id: '11', name: 'White Sapphire (Safed Pukhraj)', price: 16000, reason: 'Promotes clarity and spirituality' },
+    'amethyst': { id: '12', name: 'Amethyst', price: 5000, reason: 'Spiritual protection and wisdom' },
+    'citrine': { id: '13', name: 'Citrine', price: 4500, reason: 'Attracts wealth and positive energy' },
+    'garnet': { id: '14', name: 'Garnet', price: 6000, reason: 'Boosts energy and passion' },
+    'aquamarine': { id: '15', name: 'Aquamarine', price: 7000, reason: 'Enhances communication and clarity' },
+    'moonstone': { id: '16', name: 'Moonstone', price: 5500, reason: 'Soothes emotions and enhances intuition' },
+    'carnelian': { id: '17', name: 'Carnelian', price: 4000, reason: 'Boosts vitality and creative energy' },
+    'opal': { id: '18', name: 'Opal', price: 8000, reason: 'Enhances intuition and creativity' },
+    'turquoise': { id: '19', name: 'Turquoise', price: 3500, reason: 'Protects and brings peace' },
+    'lapis lazuli': { id: '20', name: 'Lapis Lazuli', price: 6500, reason: 'Deepens spiritual awareness' },
+    'lapis': { id: '20', name: 'Lapis Lazuli', price: 6500, reason: 'Deepens spiritual awareness' }
+  };
+
+  // First pass: Look for explicitly mentioned gemstones
+  for (const [gemstone, product] of Object.entries(gemstoneMap)) {
+    if (analysisLower.includes(gemstone) && !addedIds.has(product.id)) {
+      recommendations.push(product);
+      addedIds.add(product.id);
+    }
   }
-  if (analysisLower.includes('jupiter') || analysisLower.includes('wisdom') || analysisLower.includes('prosperity')) {
-    recommendations.push({ id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Enhances Jupiter for wealth and wisdom' });
+
+  // Second pass: Look for planetary keywords and add corresponding gemstones
+  if (analysisLower.includes('mercury') && !addedIds.has('2')) {
+    recommendations.push({ id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'Strengthens Mercury for communication' });
+    addedIds.add('2');
   }
-  if (analysisLower.includes('sun') || analysisLower.includes('leadership') || analysisLower.includes('authority')) {
-    recommendations.push({ id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Strengthens Sun for vitality and leadership' });
+  if (analysisLower.includes('jupiter') && !addedIds.has('5')) {
+    recommendations.push({ id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Enhances Jupiter for prosperity' });
+    addedIds.add('5');
   }
-  if (analysisLower.includes('moon') || analysisLower.includes('emotional') || analysisLower.includes('mind')) {
+  if (analysisLower.includes('sun') && !addedIds.has('1')) {
+    recommendations.push({ id: '1', name: 'Natural Ruby (Manikya)', price: 15000, reason: 'Strengthens Sun for vitality' });
+    addedIds.add('1');
+  }
+  if ((analysisLower.includes('moon') || analysisLower.includes('emotional')) && !addedIds.has('4')) {
     recommendations.push({ id: '4', name: 'Natural Pearl (Moti)', price: 8000, reason: 'Balances Moon for emotional stability' });
+    addedIds.add('4');
   }
-  if (analysisLower.includes('saturn') || analysisLower.includes('discipline')) {
-    recommendations.push({ id: '3', name: 'Blue Sapphire (Neelam)', price: 25000, reason: 'Strengthens Saturn for discipline and success' });
+  if (analysisLower.includes('saturn') && !addedIds.has('3')) {
+    recommendations.push({ id: '3', name: 'Blue Sapphire (Neelam)', price: 25000, reason: 'Strengthens Saturn' });
+    addedIds.add('3');
+  }
+  if ((analysisLower.includes('mars') || analysisLower.includes('courage') || analysisLower.includes('energy')) && !addedIds.has('6')) {
+    recommendations.push({ id: '6', name: 'Red Coral (Moonga)', price: 10000, reason: 'Boosts courage and strength' });
+    addedIds.add('6');
+  }
+  if ((analysisLower.includes('rahu') || analysisLower.includes('grounding')) && !addedIds.has('8')) {
+    recommendations.push({ id: '8', name: 'Hessonite (Gomed)', price: 11000, reason: 'Brings confidence and grounding' });
+    addedIds.add('8');
+  }
+  if ((analysisLower.includes('ketu') || analysisLower.includes('protection')) && !addedIds.has('9')) {
+    recommendations.push({ id: '9', name: "Cat's Eye (Lahsunia)", price: 9000, reason: 'Protects from negative influences' });
+    addedIds.add('9');
+  }
+  if ((analysisLower.includes('venus') || analysisLower.includes('beauty') || analysisLower.includes('luxury')) && !addedIds.has('10')) {
+    recommendations.push({ id: '10', name: 'Diamond (Heera)', price: 50000, reason: 'Enhances beauty and grace' });
+    addedIds.add('10');
   }
 
-  // If no specific recommendations, add general ones
+  // If no specific recommendations found, add default ones
   if (recommendations.length === 0) {
     recommendations.push(
-      { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Universal gemstone for prosperity and wisdom' },
-      { id: '7', name: '5 Mukhi Rudraksha', price: 500, reason: 'For overall well-being and spiritual growth' }
+      { id: '5', name: 'Yellow Sapphire (Pukhraj)', price: 18000, reason: 'Universal gemstone for prosperity' },
+      { id: '2', name: 'Natural Emerald (Panna)', price: 12000, reason: 'For overall growth and success' }
     );
   }
 
@@ -552,8 +817,13 @@ app.post('/api/v1/chat/message', async (req, res) => {
       aiResponse = fallbackData.response;
     }
 
-    // Generate recommendations based on the message
-    const recommendations = getGemstoneRecommendations(message);
+    // Generate recommendations based on BOTH the user message AND the AI response
+    let recommendations = getGemstoneRecommendations(message);
+    
+    // If no recommendations from user message, try to extract from AI response
+    if (recommendations.length === 0 && aiResponse) {
+      recommendations = getGemstoneRecommendationsForKundli(aiResponse);
+    }
 
     res.json({
       success: true,
@@ -598,13 +868,10 @@ app.post('/api/v1/kundli/analyze', async (req, res) => {
     // If Bedrock fails, provide a fallback response
     const finalAnalysis = analysis || generateFallbackKundliAnalysis({ name, dateOfBirth, timeOfBirth, placeOfBirth, gender });
 
-    // Get gemstone recommendations based on the analysis
-    const recommendations = getGemstoneRecommendationsForKundli(finalAnalysis);
-
+    // Don't include recommendations in Kundli analysis - only in chat messages
     res.json({
       success: true,
       analysis: finalAnalysis,
-      recommendations: recommendations,
       birthDetails: {
         name,
         dateOfBirth,
@@ -685,6 +952,147 @@ app.get('/api/v1/products/:slug', (req, res) => {
     success: true,
     product: product
   });
+});
+
+// ==========================================
+// ADMIN DASHBOARD API ENDPOINTS (CRUD)
+// ==========================================
+
+// Get all products for admin
+app.get('/api/v1/admin/products', (req, res) => {
+  res.json({
+    success: true,
+    total: products.length,
+    products: products
+  });
+});
+
+// Get single product for editing
+app.get('/api/v1/admin/products/:id', (req, res) => {
+  const product = products.find(p => p.id === req.params.id);
+  
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      error: 'Product not found'
+    });
+  }
+  
+  res.json({
+    success: true,
+    product: product
+  });
+});
+
+// Create new product
+app.post('/api/v1/admin/products', (req, res) => {
+  try {
+    const { productName, slug, shortDescription, price, compareAtPrice, category, associatedPlanets, associatedZodiacSigns } = req.body;
+    
+    if (!productName || !slug || !price) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: productName, slug, price'
+      });
+    }
+    
+    // Generate new ID
+    const newId = (Math.max(...products.map(p => parseInt(p.id))) + 1).toString();
+    
+    const newProduct = {
+      id: newId,
+      slug,
+      productName,
+      shortDescription: shortDescription || '',
+      price: parseFloat(price),
+      compareAtPrice: parseFloat(compareAtPrice) || parseFloat(price),
+      primaryImageUrl: '/images/default.jpg',
+      averageRating: 4.5,
+      reviewCount: 0,
+      isInStock: true,
+      associatedPlanets: associatedPlanets || [],
+      associatedZodiacSigns: associatedZodiacSigns || [],
+      category: category || 'gemstones'
+    };
+    
+    products.push(newProduct);
+    
+    res.status(201).json({
+      success: true,
+      message: 'Product created successfully',
+      product: newProduct
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Update product
+app.put('/api/v1/admin/products/:id', (req, res) => {
+  try {
+    const productIndex = products.findIndex(p => p.id === req.params.id);
+    
+    if (productIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found'
+      });
+    }
+    
+    const { productName, slug, shortDescription, price, compareAtPrice, category, associatedPlanets, associatedZodiacSigns, isInStock } = req.body;
+    
+    // Update only provided fields
+    if (productName) products[productIndex].productName = productName;
+    if (slug) products[productIndex].slug = slug;
+    if (shortDescription) products[productIndex].shortDescription = shortDescription;
+    if (price) products[productIndex].price = parseFloat(price);
+    if (compareAtPrice) products[productIndex].compareAtPrice = parseFloat(compareAtPrice);
+    if (category) products[productIndex].category = category;
+    if (associatedPlanets) products[productIndex].associatedPlanets = associatedPlanets;
+    if (associatedZodiacSigns) products[productIndex].associatedZodiacSigns = associatedZodiacSigns;
+    if (isInStock !== undefined) products[productIndex].isInStock = isInStock;
+    
+    res.json({
+      success: true,
+      message: 'Product updated successfully',
+      product: products[productIndex]
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Delete product
+app.delete('/api/v1/admin/products/:id', (req, res) => {
+  try {
+    const productIndex = products.findIndex(p => p.id === req.params.id);
+    
+    if (productIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found'
+      });
+    }
+    
+    const deletedProduct = products.splice(productIndex, 1);
+    
+    res.json({
+      success: true,
+      message: 'Product deleted successfully',
+      product: deletedProduct[0]
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 // 404 handler

@@ -306,6 +306,13 @@ export default function ShopPage() {
               <span className="hidden sm:inline">Get AI Recommendations</span>
               <span className="sm:hidden">AI</span>
             </Link>
+            <Link
+              href="/admin"
+              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg text-sm font-medium"
+              title="Admin Dashboard"
+            >
+              Admin
+            </Link>
           </div>
         </div>
       </header>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Bot, User, Home, ShoppingBag, Star, Calendar, Clock, MapPin, UserCircle } from 'lucide-react';
+import { Send, Sparkles, Bot, User, Home, ShoppingBag, Star, Calendar, Clock, MapPin, UserCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 interface Message {
@@ -18,12 +18,13 @@ interface Message {
 }
 
 export default function ChatPage() {
-  const [activeTab, setActiveTab] = useState<'chat' | 'kundli'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'kundli'>('kundli');
+  const [kundliSubmitted, setKundliSubmitted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: '🙏 Namaste! I am your AI Vedic Astrology guide.\n\nI can help you with:\n✨ Career & Business guidance\n💖 Love & Relationships\n🌟 Health & Wellness\n💰 Wealth & Prosperity\n🔮 Birth Chart (Kundli) Analysis\n\nTell me about yourself or click "Get Kundli" for detailed birth chart analysis!',
+      content: '🙏 Namaste! Welcome to your AI Vedic Astrology Guide.\n\nTo provide you with personalized guidance, I first need your birth chart (Kundli) details.\n\nPlease click on the "🔮 Get Kundli" tab and enter your birth information. Once you submit your details, I\'ll analyze your birth chart and we can discuss your questions!',
       timestamp: new Date(),
     },
   ]);
@@ -154,7 +155,8 @@ export default function ChatPage() {
 
       const data = await response.json();
 
-      // Switch to chat tab and add the analysis as a message
+      // Mark kundli as submitted and switch to chat tab
+      setKundliSubmitted(true);
       setActiveTab('chat');
 
       const userMessage: Message = {
@@ -172,7 +174,10 @@ export default function ChatPage() {
         recommendations: data.recommendations,
       };
 
-      setMessages((prev) => [...prev, userMessage, assistantMessage]);
+      setMessages((prev) => {
+        const filtered = prev.filter(msg => msg.id !== '1'); // Remove initial greeting
+        return [...filtered, userMessage, assistantMessage];
+      });
       setKundliLoading(false);
 
       // Reset form
@@ -228,24 +233,22 @@ export default function ChatPage() {
           {/* Tabs */}
           <div className="flex gap-2 mt-3">
             <button
-              onClick={() => setActiveTab('chat')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                activeTab === 'chat'
-                  ? 'bg-orange-500 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-orange-50'
-              }`}
-            >
-              💬 Chat
-            </button>
-            <button
               onClick={() => setActiveTab('kundli')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                activeTab === 'kundli'
-                  ? 'bg-orange-500 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-orange-50'
-              }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${activeTab === 'kundli'
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-orange-50'
+                }`}
             >
               🔮 Get Kundli
+            </button>
+            <button
+              onClick={() => setActiveTab('chat')}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${activeTab === 'chat'
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-orange-50'
+                }`}
+            >
+              💬 Chat
             </button>
           </div>
         </div>
@@ -255,168 +258,188 @@ export default function ChatPage() {
       <div className="container mx-auto px-4 py-4 max-w-5xl">
         {activeTab === 'chat' ? (
           // Chat Interface
-          <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-orange-100 overflow-hidden">
-            {/* Messages */}
-            <div className="h-[calc(100vh-280px)] overflow-y-auto p-6 space-y-6">
-              {messages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`flex gap-4 ${
-                    message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-                  } animate-fade-in`}
-                >
-                  {/* Avatar */}
-                  <div className="flex-shrink-0">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
-                        message.role === 'user'
-                          ? 'bg-gradient-to-br from-blue-500 to-purple-600'
-                          : 'bg-gradient-to-br from-orange-500 to-amber-500'
-                      }`}
-                    >
-                      {message.role === 'user' ? (
-                        <User className="w-5 h-5 text-white" />
-                      ) : (
-                        <Bot className="w-5 h-5 text-white" />
-                      )}
-                    </div>
+          <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-orange-100 p-8">
+            {!kundliSubmitted ? (
+              // Show message if Kundli not yet submitted
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="w-8 h-8 text-white" />
                   </div>
-
-                  {/* Message Content */}
-                  <div
-                    className={`flex-1 ${
-                      message.role === 'user' ? 'items-end' : 'items-start'
-                    } flex flex-col max-w-[75%]`}
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Your Kundli First</h2>
+                  <p className="text-gray-600 mb-6">
+                    Please go to the "🔮 Get Kundli" tab and enter your birth details to receive personalized astrological guidance.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('kundli')}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg"
                   >
+                    Go to Get Kundli
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Show messages and chat if Kundli submitted
+              <>
+                {/* Messages */}
+                <div className="h-[calc(100vh-280px)] overflow-y-auto p-6 space-y-6">
+                  {messages.map((message, index) => (
                     <div
-                      className={`px-5 py-3 rounded-2xl shadow-md ${
-                        message.role === 'user'
-                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-tr-md'
-                          : 'bg-white text-gray-800 border border-orange-100 rounded-tl-md'
-                      }`}
+                      key={message.id}
+                      className={`flex gap-4 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                        } animate-fade-in`}
                     >
-                      <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
-                    </div>
-
-                    {/* Recommendations */}
-                    {message.recommendations && message.recommendations.length > 0 && (
-                      <div className="mt-4 space-y-3 w-full">
-                        <div className="flex items-center gap-2 text-orange-600">
-                          <Sparkles className="w-4 h-4" />
-                          <p className="text-sm font-semibold">Recommended for you:</p>
+                      {/* Avatar */}
+                      <div className="flex-shrink-0">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${message.role === 'user'
+                            ? 'bg-gradient-to-br from-blue-500 to-purple-600'
+                            : 'bg-gradient-to-br from-orange-500 to-amber-500'
+                            }`}
+                        >
+                          {message.role === 'user' ? (
+                            <User className="w-5 h-5 text-white" />
+                          ) : (
+                            <Bot className="w-5 h-5 text-white" />
+                          )}
                         </div>
-                        {message.recommendations.map((rec) => (
-                          <Link
-                            key={rec.id}
-                            href="/shop"
-                            className="block group"
-                          >
-                            <div className="p-4 bg-white rounded-xl border-2 border-orange-200 hover:border-orange-400 hover:shadow-lg transition-all">
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                    <p className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
-                                      {rec.name}
-                                    </p>
-                                  </div>
-                                  <p className="text-sm text-gray-600 mb-2">{rec.reason}</p>
-                                </div>
-                                <div className="text-right flex-shrink-0">
-                                  <p className="text-xl font-bold text-orange-600">₹{rec.price.toLocaleString('en-IN')}</p>
-                                  <button className="mt-1 text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1">
-                                    View
-                                    <ShoppingBag className="w-3 h-3" />
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
-                        ))}
                       </div>
-                    )}
 
-                    <span className="text-xs text-gray-400 mt-2 px-2">
-                      {message.timestamp.toLocaleTimeString('en-IN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                  </div>
+                      {/* Message Content */}
+                      <div
+                        className={`flex-1 ${message.role === 'user' ? 'items-end' : 'items-start'
+                          } flex flex-col max-w-[75%]`}
+                      >
+                        <div
+                          className={`px-5 py-3 rounded-2xl shadow-md ${message.role === 'user'
+                            ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-tr-md'
+                            : 'bg-white text-gray-800 border border-orange-100 rounded-tl-md'
+                            }`}
+                        >
+                          <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                        </div>
+
+                        {/* Recommendations */}
+                        {message.recommendations && message.recommendations.length > 0 && (
+                          <div className="mt-4 space-y-3 w-full">
+                            <div className="flex items-center gap-2 text-orange-600">
+                              <Sparkles className="w-4 h-4" />
+                              <p className="text-sm font-semibold">Recommended for you:</p>
+                            </div>
+                            {message.recommendations.map((rec) => (
+                              <Link
+                                key={rec.id}
+                                href="/shop"
+                                className="block group"
+                              >
+                                <div className="p-4 bg-white rounded-xl border-2 border-orange-200 hover:border-orange-400 hover:shadow-lg transition-all">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <p className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+                                          {rec.name}
+                                        </p>
+                                      </div>
+                                      <p className="text-sm text-gray-600 mb-2">{rec.reason}</p>
+                                    </div>
+                                    <div className="text-right flex-shrink-0">
+                                      <p className="text-xl font-bold text-orange-600">₹{rec.price.toLocaleString('en-IN')}</p>
+                                      <button className="mt-1 text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1">
+                                        View
+                                        <ShoppingBag className="w-3 h-3" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+
+                        <span className="text-xs text-gray-400 mt-2 px-2">
+                          {message.timestamp.toLocaleTimeString('en-IN', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Loading indicator */}
+                  {isLoading && (
+                    <div className="flex gap-4 animate-fade-in">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-md">
+                        <Bot className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="bg-white border border-orange-100 px-5 py-4 rounded-2xl rounded-tl-md shadow-md">
+                        <div className="flex gap-2">
+                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div ref={messagesEndRef} />
                 </div>
-              ))}
 
-              {/* Loading indicator */}
-              {isLoading && (
-                <div className="flex gap-4 animate-fade-in">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-md">
-                    <Bot className="w-5 h-5 text-white" />
+                {/* Quick Replies */}
+                {showQuickReplies && messages.length <= 3 && (
+                  <div className="px-6 py-3 border-t border-orange-100 bg-orange-50/50">
+                    <p className="text-xs text-gray-600 mb-2">Quick questions:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {quickReplies.map((reply, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuickReply(reply.text)}
+                          className="px-3 py-2 bg-white text-sm text-gray-700 rounded-lg border border-orange-200 hover:border-orange-400 hover:shadow-md transition-all"
+                        >
+                          {reply.text}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="bg-white border border-orange-100 px-5 py-4 rounded-2xl rounded-tl-md shadow-md">
-                    <div className="flex gap-2">
-                      <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                )}
+
+                {/* Input Area */}
+                <div className="border-t border-orange-200 p-4 bg-gradient-to-r from-orange-50 to-amber-50">
+                  <div className="flex gap-3 items-end">
+                    <div className="flex-1">
+                      <textarea
+                        ref={inputRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        placeholder="Ask about your future, career, love, or request gemstone guidance..."
+                        className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none bg-white shadow-sm"
+                        rows={2}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <button
+                      onClick={() => sendMessage()}
+                      disabled={!input.trim() || isLoading}
+                      className="px-6 py-3 bg-gradient-to-br from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 focus:ring-4 focus:ring-orange-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg hover:shadow-xl h-[52px]"
+                    >
+                      <Send className="w-5 h-5" />
+                      <span className="hidden sm:inline">Send</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between mt-2 px-1">
+                    <p className="text-xs text-gray-500">
+                      Press <kbd className="px-2 py-0.5 bg-white border border-gray-300 rounded text-xs">Enter</kbd> to send
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Sparkles className="w-3 h-3" />
+                      <span>Powered by AWS Bedrock AI</span>
                     </div>
                   </div>
                 </div>
-              )}
-
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Quick Replies */}
-            {showQuickReplies && messages.length <= 2 && (
-              <div className="px-6 py-3 border-t border-orange-100 bg-orange-50/50">
-                <p className="text-xs text-gray-600 mb-2">Quick questions:</p>
-                <div className="flex flex-wrap gap-2">
-                  {quickReplies.map((reply, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleQuickReply(reply.text)}
-                      className="px-3 py-2 bg-white text-sm text-gray-700 rounded-lg border border-orange-200 hover:border-orange-400 hover:shadow-md transition-all"
-                    >
-                      {reply.text}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              </>
             )}
-
-            {/* Input Area */}
-            <div className="border-t border-orange-200 p-4 bg-gradient-to-r from-orange-50 to-amber-50">
-              <div className="flex gap-3 items-end">
-                <div className="flex-1">
-                  <textarea
-                    ref={inputRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    placeholder="Ask about your future, career, love, or request gemstone guidance..."
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none bg-white shadow-sm"
-                    rows={2}
-                    disabled={isLoading}
-                  />
-                </div>
-                <button
-                  onClick={() => sendMessage()}
-                  disabled={!input.trim() || isLoading}
-                  className="px-6 py-3 bg-gradient-to-br from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 focus:ring-4 focus:ring-orange-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg hover:shadow-xl h-[52px]"
-                >
-                  <Send className="w-5 h-5" />
-                  <span className="hidden sm:inline">Send</span>
-                </button>
-              </div>
-              <div className="flex items-center justify-between mt-2 px-1">
-                <p className="text-xs text-gray-500">
-                  Press <kbd className="px-2 py-0.5 bg-white border border-gray-300 rounded text-xs">Enter</kbd> to send
-                </p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Sparkles className="w-3 h-3" />
-                  <span>Powered by AWS Bedrock AI</span>
-                </div>
-              </div>
-            </div>
           </div>
         ) : (
           // Kundli Form
