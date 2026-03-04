@@ -4,6 +4,23 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, Bot, User, Home, ShoppingBag, Star, Calendar, Clock, MapPin, UserCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
+// API base URL - works with both localhost and ngrok tunnels
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}` 
+  : 'http://localhost:5000';
+
+// Get the actual API endpoint
+const getApiUrl = (path: string) => {
+  // If running on ngrok frontend, check if backend is on same domain
+  if (typeof window !== 'undefined' && window.location.hostname.includes('ngrok')) {
+    // Assume backend is on port 5000 of ngrok (separate tunnel)
+    // Change this to your backend ngrok URL
+    return `http://localhost:5000${path}`;
+  }
+  // For local development, use localhost
+  return `http://localhost:5000${path}`;
+};
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -82,7 +99,7 @@ export default function ChatPage() {
     setShowQuickReplies(false);
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/chat/message', {
+      const response = await fetch(`${getApiUrl('')}/api/v1/chat/message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +160,7 @@ export default function ChatPage() {
     setKundliLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/kundli/analyze', {
+      const response = await fetch(`${getApiUrl('')}/api/v1/kundli/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

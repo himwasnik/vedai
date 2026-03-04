@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+// Get API endpoint (works with both localhost and ngrok)
+const getApiUrl = (path: string) => {
+  return `http://localhost:5000${path}`;
+};
+
 interface Product {
   id: string;
   slug: string;
@@ -35,7 +40,7 @@ export default function AdminDashboard() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/v1/admin/products', {
+      const response = await fetch(`${getApiUrl('')}/api/v1/admin/products`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -81,8 +86,8 @@ export default function AdminDashboard() {
     
     try {
       const url = editingId 
-        ? `http://localhost:5000/api/v1/admin/products/${editingId}`
-        : 'http://localhost:5000/api/v1/admin/products';
+        ? `${getApiUrl('')}/api/v1/admin/products/${editingId}`
+        : `${getApiUrl('')}/api/v1/admin/products`;
       
       const method = editingId ? 'PUT' : 'POST';
       
@@ -117,7 +122,7 @@ export default function AdminDashboard() {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/admin/products/${id}`, {
+      const response = await fetch(`${getApiUrl('')}/api/v1/admin/products/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         mode: 'cors'
