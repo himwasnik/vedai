@@ -16,8 +16,9 @@ variable "key_pair_name" {
 }
 
 variable "anthropic_key" {
-  description = "Anthropic API Key"
+  description = "Anthropic API Key (optional - will be extracted from repo .env.example if not provided)"
   type        = string
+  default     = ""
   sensitive   = true
 }
 

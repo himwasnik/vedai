@@ -27,16 +27,26 @@ cd vedai
 # Create .env file from .env.example
 cp apps/api/.env.example apps/api/.env
 
-# Set environment variables
+# Extract Anthropic key from .env.example if not provided
+if [ -z "${anthropic_key}" ]; then
+  echo "Extracting Anthropic key from .env.example..."
+  EXTRACTED_KEY=$(grep "ANTHROPIC_API_KEY=" apps/api/.env.example | cut -d'=' -f2 | xargs)
+  if [ ! -z "$EXTRACTED_KEY" ] && [ "$EXTRACTED_KEY" != "sk-ant-xxx" ]; then
+    anthropic_key="$EXTRACTED_KEY"
+    echo "Using extracted key from .env.example"
+  fi
+fi
+
+# Set environment variables in .env
 cat >> apps/api/.env << EOF
 
 # AWS Configuration
-AWS_REGION=ap-south-1
+AWS_REGION=${aws_region}
 AWS_ACCESS_KEY_ID=$${AWS_ACCESS_KEY_ID:-}
 AWS_SECRET_ACCESS_KEY=$${AWS_SECRET_ACCESS_KEY:-}
 
-# Anthropic API Key
-ANTHROPIC_API_KEY=${anthropic_key}
+# Anthropic API Key (extracted from repo)
+ANTHROPIC_API_KEY=$${anthropic_key}
 
 # Application URLs
 NEXT_PUBLIC_API_URL=http://$(hostname -I | awk '{print $1}'):5000
