@@ -55,7 +55,7 @@ install -o root -g docker -m 750 -d /run/docker.sock.d 2>/dev/null || true
 log "Installing Docker Compose..."
 if ! command -v docker-compose &> /dev/null; then
   COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d'"' -f4)
-  COMPOSE_URL="https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)"
+  COMPOSE_URL="https://github.com/docker/compose/releases/download/$${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)"
   
   curl -L "$COMPOSE_URL" -o /usr/local/bin/docker-compose || error_exit "Failed to download Docker Compose"
   chmod +x /usr/local/bin/docker-compose || error_exit "Failed to make Docker Compose executable"
