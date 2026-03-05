@@ -3,11 +3,23 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// Get API endpoint (works with both localhost and ngrok)
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-const getApiUrl = (path: string) => {
-  return `${API_BASE}${path}`;
+// Get API URL - works with both localhost and EC2
+const getApiUrl = (path: string = ''): string => {
+  if (typeof window !== 'undefined') {
+    // Use environment variable if available (for build-time configuration)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl && apiUrl !== '') {
+      return `${apiUrl}${path}`;
+    }
+    // Runtime: construct from current location
+    // Frontend and backend should be on same host, different ports
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    // API is always on port 5000 on the same host as frontend
+    return `${protocol}//${hostname}:5000${path}`;
+  }
+  // Server-side fallback
+  return `http://localhost:5000${path}`;
 };
 
 interface Product {

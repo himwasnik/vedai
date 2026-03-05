@@ -5,6 +5,25 @@ import { ProductCard } from '../../components/store/ProductCard';
 import { Search, Filter, Sparkles, Home, MessageCircle, SlidersHorizontal, Grid3x3, Grid2x2, LayoutGrid, TrendingUp, Star, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
+// Get API URL from environment or determine dynamically
+const getApiUrl = (path: string = ''): string => {
+  if (typeof window !== 'undefined') {
+    // Use environment variable if available (for build-time configuration)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl && apiUrl !== '') {
+      return `${apiUrl}${path}`;
+    }
+    // Runtime: construct from current location
+    // Frontend and backend should be on same host, different ports
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    // API is always on port 5000 on the same host as frontend
+    return `${protocol}//${hostname}:5000${path}`;
+  }
+  // Server-side fallback
+  return `http://localhost:5000${path}`;
+};
+
 interface Product {
   id: string;
   slug: string;
@@ -48,7 +67,7 @@ export default function ShopPage() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/products');
+      const response = await fetch(getApiUrl('/api/v1/products'));
       if (!response.ok) throw new Error('Failed to fetch products');
 
       const data = await response.json();
@@ -250,7 +269,7 @@ export default function ShopPage() {
 
   const handleAddToCart = async (productId: string) => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/cart/add', {
+      const response = await fetch(getApiUrl('/api/v1/cart/add'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

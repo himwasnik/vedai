@@ -47,8 +47,11 @@ AWS_SECRET_ACCESS_KEY=$${AWS_SECRET_ACCESS_KEY:-}
 
 # Anthropic API Key (extracted from repo)
 ANTHROPIC_API_KEY=$${anthropic_key}
+EOF
 
-# Application URLs
+# Create .env.local for docker-compose override (for EC2 IP-based access)
+cat > .env.local << EOF
+# Frontend API URL - use EC2 IP for external access
 NEXT_PUBLIC_API_URL=http://$(hostname -I | awk '{print $1}'):5000
 EOF
 

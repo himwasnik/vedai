@@ -4,20 +4,22 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, Bot, User, Home, ShoppingBag, Star, Calendar, Clock, MapPin, UserCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
-// API base URL - works with both localhost and ngrok tunnels
-const API_BASE_URL = typeof window !== 'undefined' 
-  ? `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}` 
-  : 'http://localhost:5000';
-
-// Get the actual API endpoint
-const getApiUrl = (path: string) => {
-  // If running on ngrok frontend, check if backend is on same domain
-  if (typeof window !== 'undefined' && window.location.hostname.includes('ngrok')) {
-    // Assume backend is on port 5000 of ngrok (separate tunnel)
-    // Change this to your backend ngrok URL
-    return `http://localhost:5000${path}`;
+// Get API URL - works with both localhost and EC2
+const getApiUrl = (path: string = ''): string => {
+  if (typeof window !== 'undefined') {
+    // Use environment variable if available (for build-time configuration)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl && apiUrl !== '') {
+      return `${apiUrl}${path}`;
+    }
+    // Runtime: construct from current location
+    // Frontend and backend should be on same host, different ports
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    // API is always on port 5000 on the same host as frontend
+    return `${protocol}//${hostname}:5000${path}`;
   }
-  // For local development, use localhost
+  // Server-side fallback
   return `http://localhost:5000${path}`;
 };
 
