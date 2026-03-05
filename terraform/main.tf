@@ -12,10 +12,68 @@ provider "aws" {
   region = var.aws_region
 }
 
+# VPC
+resource "aws_vpc" "vedai" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = {
+    Name = "vedai-vpc"
+  }
+}
+
+# Internet Gateway
+resource "aws_internet_gateway" "vedai" {
+  vpc_id = aws_vpc.vedai.id
+
+  tags = {
+    Name = "vedai-igw"
+  }
+}
+
+# Subnet
+resource "aws_subnet" "vedai" {
+  vpc_id                  = aws_vpc.vedai.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "vedai-subnet"
+  }
+}
+
+# Route Table
+resource "aws_route_table" "vedai" {
+  vpc_id = aws_vpc.vedai.id
+
+  route {
+    cidr_block      = "0.0.0.0/0"
+    gateway_id      = aws_internet_gateway.vedai.id
+  }
+
+  tags = {
+    Name = "vedai-rt"
+  }
+}
+
+# Route table association
+resource "aws_route_table_association" "vedai" {
+  subnet_id      = aws_subnet.vedai.id
+  route_table_id = aws_route_table.vedai.id
+}
+
+# Get available AZs
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Security Group
 resource "aws_security_group" "vedai" {
   name        = "vedai-sg"
   description = "Security group for VedAI application"
+  vpc_id      = aws_vpc.vedai.id
 
   # SSH
   ingress {
@@ -62,11 +120,25 @@ resource "aws_security_group" "vedai" {
   }
 }
 
+# Get default VPC
+data "aws_vpc" "default" {
+  default = true
+}
+
+# Get first available subnet in default VPC
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
 # EC2 Instance
 resource "aws_instance" "vedai" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = var.key_pair_name
+  subnet_id              = aws_subnet.vedai.id
   vpc_security_group_ids = [aws_security_group.vedai.id]
   
   # Allocate public IP
