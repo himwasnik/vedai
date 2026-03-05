@@ -88,48 +88,31 @@ fi
 log "Configuring environment variables..."
 
 # Verify required files exist
-[ -f "apps/api/.env.example" ] || error_exit ".env.example not found in apps/api"
+[ -f ".env.example" ] || error_exit ".env.example not found at root"
 [ -f "docker-compose.yml" ] || error_exit "docker-compose.yml not found"
 
-# Create .env file from template
-cp apps/api/.env.example apps/api/.env || error_exit "Failed to copy .env.example"
+# Create root .env file from template
+cp .env.example .env || error_exit "Failed to copy .env.example"
 
-# Extract Anthropic key
+# Create apps/api/.env from its template if it exists
+if [ -f "apps/api/.env.example" ]; then
+  cp apps/api/.env.example apps/api/.env || error_exit "Failed to copy apps/api/.env.example"
+fi
+
+# Extract and inject Anthropic key from Terraform
 ANTHROPIC_KEY="${anthropic_key}"
-if [ -z "$ANTHROPIC_KEY" ]; then
-  log "Extracting Anthropic key from .env.example..."
-  EXTRACTED_KEY=$(grep "ANTHROPIC_API_KEY=" apps/api/.env.example | cut -d'=' -f2 | xargs)
-  if [ ! -z "$EXTRACTED_KEY" ] && [ "$EXTRACTED_KEY" != "sk-ant-xxx" ]; then
-    ANTHROPIC_KEY="$EXTRACTED_KEY"
-    log "Using extracted key from .env.example"
-  else
-    log "WARNING: No valid Anthropic key found"
+if [ ! -z "$ANTHROPIC_KEY" ]; then
+  log "Injecting Anthropic API key from Terraform..."
+  sed -i "s|^ANTHROPIC_API_KEY=.*|ANTHROPIC_API_KEY=$ANTHROPIC_KEY|" .env
+  if [ -f "apps/api/.env" ]; then
+    sed -i "s|^ANTHROPIC_API_KEY=.*|ANTHROPIC_API_KEY=$ANTHROPIC_KEY|" apps/api/.env
   fi
 fi
 
-# Append configuration to .env
-cat >> apps/api/.env << EOF
-
-# AWS Configuration
-AWS_REGION=${aws_region}
-AWS_ACCESS_KEY_ID=$${AWS_ACCESS_KEY_ID:-}
-AWS_SECRET_ACCESS_KEY=$${AWS_SECRET_ACCESS_KEY:-}
-
-# Anthropic API Key
-ANTHROPIC_API_KEY=$ANTHROPIC_KEY
-
-# Environment
-NODE_ENV=production
-EOF
-
-# Create docker-compose override for EC2 IP-based access
-cat > .env.local << EOF
-# Frontend API URL - use EC2 private IP for internal access
-NEXT_PUBLIC_API_URL=http://$PRIVATE_IP:5000
-
-# Docker configuration
-COMPOSE_PROJECT_NAME=vedai
-EOF
+# Update AWS configuration if provided
+if [ ! -z "${aws_region}" ]; then
+  sed -i "s|^AWS_REGION=.*|AWS_REGION=${aws_region}|" .env
+fi
 
 log "Environment configuration complete"
 
