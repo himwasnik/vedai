@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 // Get API endpoint (works with both localhost and ngrok)
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 const getApiUrl = (path: string) => {
-  return `http://localhost:5000${path}`;
+  return `${API_BASE}${path}`;
 };
 
 interface Product {
