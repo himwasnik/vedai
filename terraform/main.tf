@@ -183,14 +183,19 @@ data "aws_ami" "ubuntu" {
 
 # Elastic IP (optional but recommended)
 resource "aws_eip" "vedai" {
-  instance = aws_instance.vedai.id
-  domain   = "vpc"
+  domain = "vpc"
 
   tags = {
     Name = "vedai-eip"
   }
 
-  depends_on = [aws_instance.vedai]
+  depends_on = [aws_internet_gateway.vedai]
+}
+
+# Associate Elastic IP with instance
+resource "aws_eip_association" "vedai" {
+  instance_id   = aws_instance.vedai.id
+  allocation_id = aws_eip.vedai.id
 }
 
 # Output the public IP
