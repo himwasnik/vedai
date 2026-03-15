@@ -1,1 +1,3 @@
 HI this is test
+
+Added for Claude Code GitHub Actions testing - this PR should trigger auto-review!
