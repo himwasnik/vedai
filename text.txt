@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 HI this is test
 
 Added for Claude Code GitHub Actions testing - this PR should trigger auto-review!
+=======
+HI this is test checking weather claude is working
+>>>>>>> origin/main

@@ -21,7 +21,19 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
       
+<<<<<<< HEAD
       - name: Auto-review Pull Requests with Claude via Bedrock
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+=======
+      - name: Auto-review Pull Requests with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          bedrock-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          bedrock-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          bedrock-region: us-east-1
+          model: claude-opus-4-6
+          auto-review: true
+>>>>>>> origin/main
